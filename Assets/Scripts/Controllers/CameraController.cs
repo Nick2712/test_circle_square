@@ -69,25 +69,22 @@ namespace CircleSquare
             Debug.Log($"Required camera size x {minRequiredCameraSizeXInUnits}");
             Debug.Log($"Required camera size y {minRequiredCameraSizeYInUnits}");
 
+            if (minRequiredCameraSizeXInUnits > visibleScreenWidthInUnits)
+            {
+                float difference = (minRequiredCameraSizeXInUnits - visibleScreenWidthInUnits) / 2;
+                difference /= aspectRatio;
+                _camera.orthographicSize += difference;
+
+                Debug.Log($"x changing difference {difference}");
+                visibleScreenHeightInUnits = minRequiredCameraSizeXInUnits / aspectRatio;
+            }
             if (minRequiredCameraSizeYInUnits > visibleScreenHeightInUnits)
             {
                 float difference = (minRequiredCameraSizeYInUnits - visibleScreenHeightInUnits) / 2;
                 _camera.orthographicSize += difference;
 
                 Debug.Log($"y changing difference {difference}");
-                visibleScreenWidthInUnits = minRequiredCameraSizeXInUnits * aspectRatio;
             }
-
-            if (minRequiredCameraSizeXInUnits > visibleScreenWidthInUnits)
-            {
-                float difference = (minRequiredCameraSizeXInUnits - visibleScreenWidthInUnits) / 2;
-                difference = difference / aspectRatio;
-                _camera.orthographicSize += difference;
-
-                Debug.Log($"x changing difference {difference}");
-                //visibleScreenHeightInUnits = minRequiredCameraSizeXInUnits / aspectRatio;
-            }
-            
 
             Vector3 currentCameraPosition = _camera.transform.position;
             float cameraPositionYOfset = cameraUiSpaceInUnits - cameraBorderInUnits;
