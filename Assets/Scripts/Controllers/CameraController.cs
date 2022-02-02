@@ -16,9 +16,28 @@ namespace CircleSquare
 
         public Camera CameraUpdate(FigureView[] figures)
         {
-            float aspectRatio = (float)Screen.width / (float)Screen.height;
+            float visibleScreenWidth = (float)Screen.width - _gameOptions.CameraBorder * 2;
+            float visibleScreenHeight = (float)Screen.height - (float)Screen.height * _gameOptions.CameraUiSpace - _gameOptions.CameraBorder;
+            float unitSize = (float)Screen.height / (_camera.orthographicSize * 2);
+            float cameraBorderInUnits = _gameOptions.CameraBorder / unitSize;
+            float cameraUiSpaceInUnits = (_gameOptions.CameraUiSpace * (float)Screen.height) / unitSize;
+
+            float aspectRatio = visibleScreenWidth / visibleScreenHeight;
             float screenHeightInUnits = _camera.orthographicSize * 2;
             float screenWidthInUnits = screenHeightInUnits * aspectRatio;
+            
+            float visibleScreenWidthInUnits = visibleScreenWidth / unitSize;
+            float visibleScreenHeightInUnits = visibleScreenHeight / unitSize;
+
+            Debug.Log($"unit size = {unitSize}");
+            Debug.Log($"scren {Screen.width} x {Screen.height}");
+            Debug.Log($"width = {visibleScreenWidth}");
+            Debug.Log($"height = {visibleScreenHeight}");
+            Debug.Log($"visible width = {visibleScreenWidthInUnits}");
+            Debug.Log($"visible height = {visibleScreenHeightInUnits}");
+            Debug.Log($"camera border = {cameraBorderInUnits}");
+            Debug.Log($"camera UI = {cameraUiSpaceInUnits}");
+
             float topFigurePositionY = 0;
             float bottomFigurePositionY = 0;
             float leftmostFigurePositionX = 0;
@@ -47,24 +66,35 @@ namespace CircleSquare
             float minRequiredCameraSizeXInUnits = Mathf.Abs(leftmostFigurePositionX - rightmostFigurePositionX);
             float minRequiredCameraSizeYInUnits = Mathf.Abs(topFigurePositionY - bottomFigurePositionY);
 
-            if (minRequiredCameraSizeXInUnits > screenWidthInUnits)
+            Debug.Log($"Required camera size x {minRequiredCameraSizeXInUnits}");
+            Debug.Log($"Required camera size y {minRequiredCameraSizeYInUnits}");
+
+            if (minRequiredCameraSizeYInUnits > visibleScreenHeightInUnits)
             {
-                float difference = (minRequiredCameraSizeXInUnits - screenWidthInUnits) / 2;
-                difference /= aspectRatio;
+                float difference = (minRequiredCameraSizeYInUnits - visibleScreenHeightInUnits) / 2;
                 _camera.orthographicSize += difference;
-                screenHeightInUnits = minRequiredCameraSizeXInUnits / aspectRatio;
-            }
-            if (minRequiredCameraSizeYInUnits > screenHeightInUnits)
-            {
-                float difference = (minRequiredCameraSizeYInUnits - screenHeightInUnits) / 2;
-                _camera.orthographicSize += difference;
+
+                Debug.Log($"y changing difference {difference}");
+                visibleScreenWidthInUnits = minRequiredCameraSizeXInUnits * aspectRatio;
             }
 
+            if (minRequiredCameraSizeXInUnits > visibleScreenWidthInUnits)
+            {
+                float difference = (minRequiredCameraSizeXInUnits - visibleScreenWidthInUnits) / 2;
+                difference = difference / aspectRatio;
+                _camera.orthographicSize += difference;
+
+                Debug.Log($"x changing difference {difference}");
+                //visibleScreenHeightInUnits = minRequiredCameraSizeXInUnits / aspectRatio;
+            }
+            
+
             Vector3 currentCameraPosition = _camera.transform.position;
+            float cameraPositionYOfset = cameraUiSpaceInUnits - cameraBorderInUnits;
             float requiredCameraPositionX = leftmostFigurePositionX + minRequiredCameraSizeXInUnits / 2;
             float requiredCameraPositionY = bottomFigurePositionY + minRequiredCameraSizeYInUnits / 2;
             currentCameraPosition.x = requiredCameraPositionX;
-            currentCameraPosition.y = requiredCameraPositionY;
+            currentCameraPosition.y = requiredCameraPositionY + cameraPositionYOfset;
 
             _camera.transform.position = currentCameraPosition;
             return _camera;
