@@ -21,22 +21,10 @@ namespace CircleSquare
             float unitSize = (float)Screen.height / (_camera.orthographicSize * 2);
             float cameraBorderInUnits = _gameOptions.CameraBorder / unitSize;
             float cameraUiSpaceInUnits = (_gameOptions.CameraUiSpace * (float)Screen.height) / unitSize;
-
-            float aspectRatio = visibleScreenWidth / visibleScreenHeight;
-            float screenHeightInUnits = _camera.orthographicSize * 2;
-            float screenWidthInUnits = screenHeightInUnits * aspectRatio;
-            
+            float aspectRatio = (float)Screen.width / (float)Screen.height;
+            float visibleAspectRatio = visibleScreenWidth / visibleScreenHeight;
             float visibleScreenWidthInUnits = visibleScreenWidth / unitSize;
             float visibleScreenHeightInUnits = visibleScreenHeight / unitSize;
-
-            Debug.Log($"unit size = {unitSize}");
-            Debug.Log($"scren {Screen.width} x {Screen.height}");
-            Debug.Log($"width = {visibleScreenWidth}");
-            Debug.Log($"height = {visibleScreenHeight}");
-            Debug.Log($"visible width = {visibleScreenWidthInUnits}");
-            Debug.Log($"visible height = {visibleScreenHeightInUnits}");
-            Debug.Log($"camera border = {cameraBorderInUnits}");
-            Debug.Log($"camera UI = {cameraUiSpaceInUnits}");
 
             float topFigurePositionY = 0;
             float bottomFigurePositionY = 0;
@@ -66,24 +54,19 @@ namespace CircleSquare
             float minRequiredCameraSizeXInUnits = Mathf.Abs(leftmostFigurePositionX - rightmostFigurePositionX);
             float minRequiredCameraSizeYInUnits = Mathf.Abs(topFigurePositionY - bottomFigurePositionY);
 
-            Debug.Log($"Required camera size x {minRequiredCameraSizeXInUnits}");
-            Debug.Log($"Required camera size y {minRequiredCameraSizeYInUnits}");
-
             if (minRequiredCameraSizeXInUnits > visibleScreenWidthInUnits)
             {
                 float difference = (minRequiredCameraSizeXInUnits - visibleScreenWidthInUnits) / 2;
                 difference /= aspectRatio;
+                difference += (cameraBorderInUnits * 2) / aspectRatio;
                 _camera.orthographicSize += difference;
-
-                Debug.Log($"x changing difference {difference}");
-                visibleScreenHeightInUnits = minRequiredCameraSizeXInUnits / aspectRatio;
+                visibleScreenHeightInUnits = minRequiredCameraSizeXInUnits / visibleAspectRatio;
             }
             if (minRequiredCameraSizeYInUnits > visibleScreenHeightInUnits)
             {
                 float difference = (minRequiredCameraSizeYInUnits - visibleScreenHeightInUnits) / 2;
+                difference += (cameraBorderInUnits + cameraUiSpaceInUnits);
                 _camera.orthographicSize += difference;
-
-                Debug.Log($"y changing difference {difference}");
             }
 
             Vector3 currentCameraPosition = _camera.transform.position;
