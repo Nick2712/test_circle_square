@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 
@@ -16,7 +14,7 @@ namespace CircleSquare
             _camera = camera;
         }
 
-        public void LateUpdate(List<FigureView> figures)
+        public Camera CameraUpdate(FigureView[] figures)
         {
             float aspectRatio = (float)Screen.width / (float)Screen.height;
             float screenHeightInUnits = _camera.orthographicSize * 2;
@@ -54,16 +52,12 @@ namespace CircleSquare
                 float difference = (minRequiredCameraSizeXInUnits - screenWidthInUnits) / 2;
                 difference /= aspectRatio;
                 _camera.orthographicSize += difference;
-                screenHeightInUnits = minRequiredCameraSizeYInUnits;
-
-                Debug.Log("correcting width");
+                screenHeightInUnits = minRequiredCameraSizeXInUnits / aspectRatio;
             }
             if (minRequiredCameraSizeYInUnits > screenHeightInUnits)
             {
                 float difference = (minRequiredCameraSizeYInUnits - screenHeightInUnits) / 2;
                 _camera.orthographicSize += difference;
-                
-                Debug.Log("correcting hight");
             }
 
             Vector3 currentCameraPosition = _camera.transform.position;
@@ -73,6 +67,7 @@ namespace CircleSquare
             currentCameraPosition.y = requiredCameraPositionY;
 
             _camera.transform.position = currentCameraPosition;
+            return _camera;
         }
     }
 }

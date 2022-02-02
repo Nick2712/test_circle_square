@@ -12,6 +12,7 @@ namespace CircleSquare
         public int FigureSize => _figureSize;
         public Vector2 FigurePosition => transform.position;
         public float FigureSizeInUnits { get; private set; }
+        public bool IsEnabled;
 
         private GameOptions _gameOptions;
 
