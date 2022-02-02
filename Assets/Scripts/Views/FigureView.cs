@@ -10,6 +10,8 @@ namespace CircleSquare
 
         public FigureType FigureType => _figureType;
         public int FigureSize => _figureSize;
+        public Vector2 FigurePosition => transform.position;
+        public float FigureSizeInUnits { get; private set; }
 
         private GameOptions _gameOptions;
 
@@ -45,8 +47,9 @@ namespace CircleSquare
         {
             transform.localScale = Vector3.one;
             float figureSize = 1 + _figureSize * _gameOptions.FigureSizeStep + _gameOptions.FigureBorder;
-            float circleScaleCoefficient = (Mathf.Sqrt(figureSize * figureSize * 2));
-            transform.localScale *= circleScaleCoefficient;
+            float circleSize = (Mathf.Sqrt(figureSize * figureSize * 2));
+            transform.localScale *= circleSize;
+            FigureSizeInUnits = circleSize;
         }
 
         private void MakeScaleSquare()
@@ -54,6 +57,7 @@ namespace CircleSquare
             transform.localScale = Vector3.one;
             float figureSize = 1 + _figureSize * _gameOptions.FigureSizeStep;
             transform.localScale *= figureSize;
+            FigureSizeInUnits = figureSize;
         }
     }
 }

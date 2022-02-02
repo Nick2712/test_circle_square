@@ -10,10 +10,23 @@ namespace CircleSquare
         private int _currentScaleCoefficient;
         private Camera _mainCamera;
         private GameOptions _gameOptions;
+        private CameraController _cameraController;
+        private List<FigureView> _figures = new List<FigureView>();
 
         void Start()
         {
             _gameOptions = Resources.Load<GameOptions>(Constants.GameOptions);
+            _mainCamera = Camera.main;
+            _cameraController = new CameraController(_gameOptions, _mainCamera);
+            _figures.AddRange(FindObjectsOfType<FigureView>());
+            if(_figures.Count < 1)
+            {
+                Debug.LogError("figuresNotFound");
+            }
+            else
+            {
+                Debug.Log($"found {_figures.Count} figures");
+            }
         }
 
         void Update()
@@ -50,5 +63,10 @@ namespace CircleSquare
         //        unitSize, (mousePositionInScreen.y - cameraCenter.y) / unitSize);
         //    return result;
         //}
+
+        private void LateUpdate()
+        {
+            _cameraController.LateUpdate(_figures);
+        }
     }
 }
