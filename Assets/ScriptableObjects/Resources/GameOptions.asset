@@ -13,5 +13,7 @@ MonoBehaviour:
   m_Name: GameOptions
   m_EditorClassIdentifier: 
   _figureBorder: 0.1
-  _figureSizeStep: 0.2
+  _figureSizeStep: 0.345
   _cameraMinSize: 5
+  _cameraBorder: 10
+  _cameraUiSpace: 0.2

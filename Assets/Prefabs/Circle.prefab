@@ -97,3 +97,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _figureType: 1
   _figureSize: 0
+  IsEnabled: 0
